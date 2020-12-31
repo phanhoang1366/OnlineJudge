@@ -5,6 +5,7 @@ import logging
 from django.http import HttpResponse, QueryDict
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import F
 from django.views.generic import View
 
 logger = logging.getLogger("")
@@ -134,10 +135,9 @@ class APIView(View):
         if offset < 0:
             offset = 0
         if orderby:
-            query_set = query_set.extra(
-                select={'ac_rate': 'accepted_number / submission_number'},
-                order_by=('ac_rate',)
-            ) if orderby == 'ac_rate' else query_set.order_by(orderby)
+            query_set = query_set.annotate(
+                ac_rate=F('accepted_number') / (F['submission_number'] + 1)
+            ).order_by(orderby)
         results = query_set[offset:offset + limit]
         if object_serializer:
             count = query_set.count()
