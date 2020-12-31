@@ -118,9 +118,9 @@ class APIView(View):
         :return:
         """
         try:
-            reverse = bool(request.GET.get("reverse", "False"))
+            orderby = request.GET.get("orderby", None)
         except ValueError:
-            reverse = False
+            orderby = None
         try:
             limit = int(request.GET.get("limit", "10"))
         except ValueError:
@@ -133,8 +133,8 @@ class APIView(View):
             offset = 0
         if offset < 0:
             offset = 0
-        if reverse:
-            results.reverse()
+        if orderby:
+            query_set = query_set.order_by(orderby)
         results = query_set[offset:offset + limit]
         if object_serializer:
             count = query_set.count()
