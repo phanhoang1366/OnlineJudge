@@ -118,6 +118,10 @@ class APIView(View):
         :return:
         """
         try:
+            reverse = bool(request.GET.get("reverse", "False"))
+        except ValueError:
+            reverse = False
+        try:
             limit = int(request.GET.get("limit", "10"))
         except ValueError:
             limit = 10
@@ -129,6 +133,8 @@ class APIView(View):
             offset = 0
         if offset < 0:
             offset = 0
+        if reverse:
+            results.reverse()
         results = query_set[offset:offset + limit]
         if object_serializer:
             count = query_set.count()
