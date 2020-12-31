@@ -135,11 +135,7 @@ class APIView(View):
         if offset < 0:
             offset = 0
         if orderby:
-            query_set = query_set.annotate(
-                ac_rate=Case(When(submission_number=0, then=0),
-                             default=1.0 * F('accepted_number') / F('submission_number'),
-                             output_field=FloatField())
-            ).order_by(orderby)
+            query_set = query_set.order_by(orderby)
         results = query_set[offset:offset + limit]
         if object_serializer:
             count = query_set.count()
