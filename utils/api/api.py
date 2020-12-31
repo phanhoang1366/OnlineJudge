@@ -2,10 +2,11 @@ import functools
 import json
 import logging
 
+from django.db import models
 from django.http import HttpResponse, QueryDict
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import F
+from django.db.models import F, ExpressionWrapper
 from django.views.generic import View
 
 logger = logging.getLogger("")
@@ -136,7 +137,8 @@ class APIView(View):
             offset = 0
         if orderby:
             query_set = query_set.annotate(
-                ac_rate=F('accepted_number') / (F['submission_number'] + 1)
+                ac_rate=ExpressionWrapper(F('accepted_number') / (F['submission_number'] + 1),
+                                          output_field=FloatField())
             ).order_by(orderby)
         results = query_set[offset:offset + limit]
         if object_serializer:
