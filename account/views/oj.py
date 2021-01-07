@@ -181,6 +181,8 @@ class UserLoginAPI(APIView):
             else:
                 return self.error("Invalid two factor verification code")
         else:
+            if '@' in data["username"]:
+                return self.error("Don't use email, use your username")
             return self.error("Invalid username or password")
 
 
