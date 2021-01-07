@@ -412,8 +412,12 @@ class ProfileProblemDisplayIDRefreshAPI(APIView):
         display_ids = Problem.objects.filter(id__in=ids, visible=True).values_list("_id", flat=True)
         id_map = dict(zip(ids, display_ids))
         for k, v in acm_problems.items():
+            if k not in id_map:
+                continue
             v["_id"] = id_map[k]
         for k, v in oi_problems.items():
+            if k not in id_map:
+                continue
             v["_id"] = id_map[k]
         profile.save(update_fields=["acm_problems_status", "oi_problems_status"])
         return self.success()
