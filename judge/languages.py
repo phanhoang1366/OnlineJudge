@@ -437,6 +437,38 @@ _py3_lang_config = {
     }
 }
 
+_php_lang_config = {
+    "template": """//PREPEND BEGIN
+//PREPEND END
+//TEMPLATE BEGIN
+//TEMPLATE END
+//APPEND BEGIN
+//APPEND END""",
+    "run": {
+        "exe_name": "solution.php",
+        "command": "/usr/bin/php {exe_path}",
+        "seccomp_rule": "",
+        "env": default_env,
+        "memory_limit_check_only": 1
+    }
+}
+
+_js_lang_config = {
+    "template": """//PREPEND BEGIN
+//PREPEND END
+//TEMPLATE BEGIN
+//TEMPLATE END
+//APPEND BEGIN
+//APPEND END""",
+    "run": {
+        "exe_name": "solution.js",
+        "command": "/usr/bin/node {exe_path}",
+        "seccomp_rule": "",
+        "env": ["NO_COLOR=true"] + default_env,
+        "memory_limit_check_only": 1
+    }
+}
+
 _go_lang_config = {
     "template": """//PREPEND BEGIN
 //PREPEND END
@@ -453,7 +485,7 @@ _go_lang_config = {
         "max_real_time": 5000,
         "max_memory": 1024 * 1024 * 1024,
         "compile_command": "/usr/bin/go build -o {exe_path} {src_path}",
-        "env": ["GOCACHE=/tmp"]
+        "env": ["GOCACHE=/tmp", "GOPATH=/tmp/go"]
     },
     "run": {
         "command": "{exe_path}",
@@ -478,7 +510,9 @@ languages = [
     {"config": _cpp_17_lang_config, "name": "C++ 17", "description": "G++ 9.3.0", "content_type": "text/x-c++src"},
     {"config": _cpp_17_o2_lang_config, "name": "C++ 17 With O2", "description": "G++ 9.3.0", "content_type": "text/x-c++src"},
     {"config": _java_lang_config, "name": "Java", "description": "OpenJDK 1.8", "content_type": "text/x-java"},
+    {"config": _js_lang_config, "name": "JavaScript", "description": "JavaScript (Node.Js 14)", "content_type": "text/typescript"},
+    {"config": _php_lang_config, "name": "PHP", "description": "PHP 8.0", "content_type": "text/x-php"},
     {"config": _py2_lang_config, "name": "Python2", "description": "Python 2.7.17", "content_type": "text/x-python"},
     {"config": _py3_lang_config, "name": "Python3", "description": "Python 3.6.9", "content_type": "text/x-python"},
-    {"config": _go_lang_config, "name": "Golang", "description": "Golang 1.14", "content_type": "text/x-go"},
+    {"config": _go_lang_config, "name": "Golang", "description": "Golang 1.14", "content_type": "text/x-go"}
 ]
