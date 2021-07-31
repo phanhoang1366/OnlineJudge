@@ -62,7 +62,7 @@ class ContestListAPI(APIView):
             if status == ContestStatus.CONTEST_NOT_START:
                 contests = contests.filter(start_time__gt=cur)
             elif status == ContestStatus.CONTEST_ENDED:
-                contests = contests.filter(end_time__lt=cur)
+                contests = contests.filter(end_time__gt=cur)
             else:
                 contests = contests.filter(start_time__lte=cur, end_time__gte=cur)
         return self.success(self.paginate_data(request, contests, ContestSerializer))
