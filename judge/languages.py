@@ -519,7 +519,7 @@ languages = [
     {"config": _cpp_17_o2_lang_config, "name": "C++ 17 With O2", "description": "G++ 9.3.0", "content_type": "text/x-c++src"},
     {"config": _java_lang_config, "name": "Java", "description": "OpenJDK 1.8", "content_type": "text/x-java"},
     {"config": _csharp_lang_config, "name": "C#", "description": "Mono 4.6.2", "content_type": "text/x-csharp"},
-    {"config": _js_lang_config, "name": "JavaScript", "description": "JavaScript (Node.Js 14)", "content_type": "text/typescript"},
+    {"config": _js_lang_config, "name": "JavaScript", "description": "Node.Js 14", "content_type": "text/typescript"},
     {"config": _py2_lang_config, "name": "Python2", "description": "Python 2.7.17", "content_type": "text/x-python"},
     {"config": _py3_lang_config, "name": "Python3", "description": "Python 3.6.9", "content_type": "text/x-python"},
     {"config": _go_lang_config, "name": "Golang", "description": "Golang 1.14", "content_type": "text/x-go"}
