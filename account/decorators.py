@@ -24,10 +24,10 @@ class BasePermissionDecorator(object):
 
         if self.check_permission():
             if self.request.user.is_disabled:
-                return self.error("Your account is disabled")
+                return self.error("Tài khoản của bạn đã bị khóa.")
             return self.func(*args, **kwargs)
         else:
-            return self.error("Please login first")
+            return self.error("Vui lòng đăng nhập trước.")
 
     def check_permission(self):
         raise NotImplementedError()
@@ -101,17 +101,17 @@ def check_contest_permission(check_type="details"):
             else:
                 contest_id = request.GET.get("contest_id")
             if not contest_id:
-                return self.error("Parameter error, contest_id is required")
+                return self.error("Lỗi tham số, cần contest_id.")
 
             try:
                 # use self.contest to avoid query contest again in view.
                 self.contest = Contest.objects.select_related("created_by").get(id=contest_id, visible=True)
             except Contest.DoesNotExist:
-                return self.error("Contest %s doesn't exist" % contest_id)
+                return self.error("Contest %s không có." % contest_id)
 
             # Anonymous
             if not user.is_authenticated:
-                return self.error("Please login first.")
+                return self.error("Vui lòng đăng nhập trước.")
 
             # creator or owner
             if user.is_contest_admin(self.contest):
@@ -120,16 +120,16 @@ def check_contest_permission(check_type="details"):
             if self.contest.contest_type == ContestType.PASSWORD_PROTECTED_CONTEST:
                 # password error
                 if not check_contest_password(request.session.get(CONTEST_PASSWORD_SESSION_KEY, {}).get(self.contest.id), self.contest.password):
-                    return self.error("Wrong password or password expired")
+                    return self.error("Sai mật khẩu hoặc mật khẩu hết hạn.")
 
             # regular user get contest problems, ranks etc. before contest started
             if self.contest.status == ContestStatus.CONTEST_NOT_START and check_type != "details":
-                return self.error("Contest has not started yet.")
+                return self.error("Contest hiện chưa bắt đầu.")
 
             # check does user have permission to get ranks, submissions in OI Contest
             if self.contest.status == ContestStatus.CONTEST_UNDERWAY and self.contest.rule_type == ContestRuleType.OI:
                 if not self.contest.real_time_rank and (check_type == "ranks" or check_type == "submissions"):
-                    return self.error(f"No permission to get {check_type}")
+                    return self.error(f"Không đủ quyền để lấy {check_type}.")
 
             return func(*args, **kwargs)
         return _check_permission
@@ -137,7 +137,7 @@ def check_contest_permission(check_type="details"):
 
 
 def ensure_created_by(obj, user):
-    e = APIError(msg=f"{obj.__class__.__name__} does not exist")
+    e = APIError(msg=f"Không có {obj.__class__.__name__}")
     if not user.is_admin_role():
         raise e
     if user.is_super_admin():
