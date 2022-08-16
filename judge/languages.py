@@ -414,6 +414,31 @@ _csharp_lang_config = {
     }
 }
 
+_fpc_lang_config = {
+    "template": """//PREPEND BEGIN
+//PREPEND END
+
+//TEMPLATE BEGIN
+//TEMPLATE END
+
+//APPEND BEGIN
+//APPEND END""",
+    "compile": {
+        "src_name": "Main.pas",
+        "exe_name": "Main",
+        "max_cpu_time": 5000,
+        "max_real_time": 10000,
+        "max_memory": -1,
+        "compile_command": "/usr/bin/fpc -o {exe_path} {src_path}"
+    },
+    "run": {
+        "command": "{exe_path}",
+        "seccomp_rule": None,
+        "env": default_env,
+        "memory_limit_check_only": 1
+    }
+}
+
 _py2_lang_config = {
     "template": """//PREPEND BEGIN
 //PREPEND END
@@ -522,5 +547,6 @@ languages = [
     {"config": _js_lang_config, "name": "JavaScript", "description": "Node.Js 14", "content_type": "text/typescript"},
     {"config": _py2_lang_config, "name": "Python2", "description": "Python 2.7.17", "content_type": "text/x-python"},
     {"config": _py3_lang_config, "name": "Python3", "description": "Python 3.6.9", "content_type": "text/x-python"},
-    {"config": _go_lang_config, "name": "Golang", "description": "Golang 1.14", "content_type": "text/x-go"}
+    {"config": _go_lang_config, "name": "Golang", "description": "Golang 1.14", "content_type": "text/x-go"},
+    {"config": _fpc_lang_config, "name": "Pascal", "description": "Free Pascal 3.2.2", "content_type": "text/x-pascal"},
 ]
