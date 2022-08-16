@@ -548,5 +548,5 @@ languages = [
     {"config": _py2_lang_config, "name": "Python2", "description": "Python 2.7.17", "content_type": "text/x-python"},
     {"config": _py3_lang_config, "name": "Python3", "description": "Python 3.6.9", "content_type": "text/x-python"},
     {"config": _go_lang_config, "name": "Golang", "description": "Golang 1.14", "content_type": "text/x-go"},
-    {"config": _fpc_lang_config, "name": "Pascal", "description": "Free Pascal 3.2.2", "content_type": "text/x-pascal"},
+    {"config": _fpc_lang_config, "name": "Pascal", "description": "Free Pascal 3.2.2", "content_type": "text/x-pascal"}
 ]
