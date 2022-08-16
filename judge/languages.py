@@ -523,7 +523,7 @@ _go_lang_config = {
     "run": {
         "command": "{exe_path}",
         "seccomp_rule": "",
-        # 降低内存占用
+        # reduce memory usage
         "env": ["GODEBUG=madvdontneed=1"] + default_env,
         "memory_limit_check_only": 1
     }
