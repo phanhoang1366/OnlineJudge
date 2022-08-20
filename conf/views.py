@@ -73,7 +73,7 @@ class SMTPTestAPI(APIView):
                        content="Bạn đã cài đặt SMTP thành công.")
         except smtplib.SMTPResponseException as e:
             # guess error message encoding
-            msg = b"Không thể gửi email."
+            msg = b"Cannot send an email"
             try:
                 msg = e.smtp_error
                 # qq mail
