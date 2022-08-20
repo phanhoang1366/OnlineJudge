@@ -36,11 +36,11 @@ class TestCaseZipProcessor(object):
         try:
             zip_file = zipfile.ZipFile(uploaded_zip_file, "r")
         except zipfile.BadZipFile:
-            raise APIError("Bad zip file")
+            raise APIError("Không phải file zip hoặc file zip bị lỗi")
         name_list = zip_file.namelist()
         test_case_list = self.filter_name_list(name_list, spj=spj, dir=dir)
         if not test_case_list:
-            raise APIError("Empty file")
+            raise APIError("File zip không đúng mẫu, yêu cầu 1.in, 1.out, 2.in, 2.out,...")
 
         test_case_id = rand_str()
         test_case_dir = os.path.join(settings.TEST_CASE_DIR, test_case_id)
@@ -117,11 +117,11 @@ class TestCaseAPI(CSRFExemptAPIView, TestCaseZipProcessor):
     def get(self, request):
         problem_id = request.GET.get("problem_id")
         if not problem_id:
-            return self.error("Parameter error, problem_id is required")
+            return self.error("Lỗi tham số, yêu cầu problem_id")
         try:
             problem = Problem.objects.get(id=problem_id)
         except Problem.DoesNotExist:
-            return self.error("Problem does not exists")
+            return self.error("Problem không tồn tại")
 
         if problem.contest:
             ensure_created_by(problem.contest, request.user)
@@ -130,7 +130,7 @@ class TestCaseAPI(CSRFExemptAPIView, TestCaseZipProcessor):
 
         test_case_dir = os.path.join(settings.TEST_CASE_DIR, problem.test_case_id)
         if not os.path.isdir(test_case_dir):
-            return self.error("Test case does not exists")
+            return self.error("Test case không tồn tại")
         name_list = self.filter_name_list(os.listdir(test_case_dir), problem.spj)
         name_list.append("info")
         file_name = os.path.join(test_case_dir, problem.test_case_id + ".zip")
@@ -150,7 +150,7 @@ class TestCaseAPI(CSRFExemptAPIView, TestCaseZipProcessor):
             spj = form.cleaned_data["spj"] == "true"
             file = form.cleaned_data["file"]
         else:
-            return self.error("Upload failed")
+            return self.error("Upload không thành công")
         zip_file = f"/tmp/{rand_str()}.zip"
         with open(zip_file, "wb") as f:
             for chunk in file:
@@ -177,9 +177,9 @@ class ProblemBase(APIView):
         data = request.data
         if data["spj"]:
             if not data["spj_language"] or not data["spj_code"]:
-                return "Invalid spj"
+                return "spj không hợp lệ"
             if not data["spj_compile_ok"]:
-                return "SPJ code must be compiled successfully"
+                return "SPJ code phải được dịch thành công"
             data["spj_version"] = hashlib.md5(
                 (data["spj_language"] + ":" + data["spj_code"]).encode("utf-8")).hexdigest()
         else:
@@ -189,7 +189,7 @@ class ProblemBase(APIView):
             total_score = 0
             for item in data["test_case_score"]:
                 if item["score"] <= 0:
-                    return "Invalid score"
+                    return "Điểm không hợp lệ"
                 else:
                     total_score += item["score"]
             data["total_score"] = total_score
@@ -203,9 +203,9 @@ class ProblemAPI(ProblemBase):
         data = request.data
         _id = data["_id"]
         if not _id:
-            return self.error("Display ID is required")
+            return self.error("Display ID là cần thiết")
         if Problem.objects.filter(_id=_id, contest_id__isnull=True).exists():
-            return self.error("Display ID already exists")
+            return self.error("Display ID đã tồn tại")
 
         error_info = self.common_checks(request)
         if error_info:
@@ -235,12 +235,12 @@ class ProblemAPI(ProblemBase):
                 ensure_created_by(problem, request.user)
                 return self.success(ProblemAdminSerializer(problem).data)
             except Problem.DoesNotExist:
-                return self.error("Problem does not exist")
+                return self.error("Problem không tồn tại")
 
         problems = Problem.objects.filter(contest_id__isnull=True).order_by("-create_time")
         if rule_type:
             if rule_type not in ProblemRuleType.choices():
-                return self.error("Invalid rule_type")
+                return self.error("rule_type không hợp lệ")
             else:
                 problems = problems.filter(rule_type=rule_type)
 
@@ -261,13 +261,13 @@ class ProblemAPI(ProblemBase):
             problem = Problem.objects.get(id=problem_id)
             ensure_created_by(problem, request.user)
         except Problem.DoesNotExist:
-            return self.error("Problem does not exist")
+            return self.error("Problem không tồn tại")
 
         _id = data["_id"]
         if not _id:
-            return self.error("Display ID is required")
+            return self.error("Display ID là cần thiết")
         if Problem.objects.exclude(id=problem_id).filter(_id=_id, contest_id__isnull=True).exists():
-            return self.error("Display ID already exists")
+            return self.error("Display ID đã tồn tại")
 
         error_info = self.common_checks(request)
         if error_info:
@@ -294,11 +294,11 @@ class ProblemAPI(ProblemBase):
     def delete(self, request):
         id = request.GET.get("id")
         if not id:
-            return self.error("Invalid parameter, id is required")
+            return self.error("Lỗi tham số, id is required")
         try:
             problem = Problem.objects.get(id=id, contest_id__isnull=True)
         except Problem.DoesNotExist:
-            return self.error("Problem does not exists")
+            return self.error("Problem không tồn tại")
         ensure_created_by(problem, request.user)
         # d = os.path.join(settings.TEST_CASE_DIR, problem.test_case_id)
         # if os.path.isdir(d):
@@ -315,17 +315,17 @@ class ContestProblemAPI(ProblemBase):
             contest = Contest.objects.get(id=data.pop("contest_id"))
             ensure_created_by(contest, request.user)
         except Contest.DoesNotExist:
-            return self.error("Contest does not exist")
+            return self.error("Contest không tồn tại")
 
         if data["rule_type"] != contest.rule_type:
-            return self.error("Invalid rule type")
+            return self.error("Rule type không hợp lệ")
 
         _id = data["_id"]
         if not _id:
-            return self.error("Display ID is required")
+            return self.error("Display ID là cần thiết")
 
         if Problem.objects.filter(_id=_id, contest=contest).exists():
-            return self.error("Duplicate Display id")
+            return self.error("Trùng Display id")
 
         error_info = self.common_checks(request)
         if error_info:
@@ -354,16 +354,16 @@ class ContestProblemAPI(ProblemBase):
                 problem = Problem.objects.get(id=problem_id)
                 ensure_created_by(problem.contest, user)
             except Problem.DoesNotExist:
-                return self.error("Problem does not exist")
+                return self.error("Problem không tồn tại")
             return self.success(ProblemAdminSerializer(problem).data)
 
         if not contest_id:
-            return self.error("Contest id is required")
+            return self.error("Contest id là cần thiết")
         try:
             contest = Contest.objects.get(id=contest_id)
             ensure_created_by(contest, user)
         except Contest.DoesNotExist:
-            return self.error("Contest does not exist")
+            return self.error("Contest không tồn tại")
         problems = Problem.objects.filter(contest=contest).order_by("-create_time")
         if user.is_admin():
             problems = problems.filter(contest__created_by=user)
@@ -381,23 +381,23 @@ class ContestProblemAPI(ProblemBase):
             contest = Contest.objects.get(id=data.pop("contest_id"))
             ensure_created_by(contest, user)
         except Contest.DoesNotExist:
-            return self.error("Contest does not exist")
+            return self.error("Contest không tồn tại")
 
         if data["rule_type"] != contest.rule_type:
-            return self.error("Invalid rule type")
+            return self.error("Rule type không hợp lệ")
 
         problem_id = data.pop("id")
 
         try:
             problem = Problem.objects.get(id=problem_id, contest=contest)
         except Problem.DoesNotExist:
-            return self.error("Problem does not exist")
+            return self.error("Problem không tồn tại")
 
         _id = data["_id"]
         if not _id:
-            return self.error("Display ID is required")
+            return self.error("Display ID là cần thiết")
         if Problem.objects.exclude(id=problem_id).filter(_id=_id, contest=contest).exists():
-            return self.error("Display ID already exists")
+            return self.error("Display ID đã tồn tại")
 
         error_info = self.common_checks(request)
         if error_info:
@@ -422,14 +422,14 @@ class ContestProblemAPI(ProblemBase):
     def delete(self, request):
         id = request.GET.get("id")
         if not id:
-            return self.error("Invalid parameter, id is required")
+            return self.error("Lỗi tham số, id is required")
         try:
             problem = Problem.objects.get(id=id, contest_id__isnull=False)
         except Problem.DoesNotExist:
-            return self.error("Problem does not exists")
+            return self.error("Problem không tồn tại")
         ensure_created_by(problem.contest, request.user)
         if Submission.objects.filter(problem=problem).exists():
-            return self.error("Can't delete the problem as it has submissions")
+            return self.error("Không thể xóa problem vì nó đã có các bài gửi")
         # d = os.path.join(settings.TEST_CASE_DIR, problem.test_case_id)
         # if os.path.isdir(d):
         #    shutil.rmtree(d, ignore_errors=True)
@@ -444,12 +444,12 @@ class MakeContestProblemPublicAPIView(APIView):
         data = request.data
         display_id = data.get("display_id")
         if Problem.objects.filter(_id=display_id, contest_id__isnull=True).exists():
-            return self.error("Duplicate display ID")
+            return self.error("Trùng display ID")
 
         try:
             problem = Problem.objects.get(id=data["id"])
         except Problem.DoesNotExist:
-            return self.error("Problem does not exist")
+            return self.error("Problem không tồn tại")
 
         if not problem.contest or problem.is_public:
             return self.error("Already be a public problem")
@@ -476,12 +476,12 @@ class AddContestProblemAPI(APIView):
             contest = Contest.objects.get(id=data["contest_id"])
             problem = Problem.objects.get(id=data["problem_id"])
         except (Contest.DoesNotExist, Problem.DoesNotExist):
-            return self.error("Contest or Problem does not exist")
+            return self.error("Contest hoặc Problem không tồn tại")
 
         if contest.status == ContestStatus.CONTEST_ENDED:
-            return self.error("Contest has ended")
+            return self.error("Contest đã kết thúc")
         if Problem.objects.filter(contest=contest, _id=data["display_id"]).exists():
-            return self.error("Duplicate display id in this contest")
+            return self.error("Trùng display id tring contest này")
 
         tags = problem.tags.all()
         problem.pk = None
@@ -572,12 +572,12 @@ class ImportProblemAPI(CSRFExemptAPIView, TestCaseZipProcessor):
                         problem_info = json.load(f)
                         serializer = ImportProblemSerializer(data=problem_info)
                         if not serializer.is_valid():
-                            return self.error(f"Invalid problem format, error is {serializer.errors}")
+                            return self.error(f"Định dạng problem không hợp lệ, lỗi là {serializer.errors}")
                         else:
                             problem_info = serializer.data
                             for item in problem_info["template"].keys():
                                 if item not in SysOptions.language_names:
-                                    return self.error(f"Unsupported language {item}")
+                                    return self.error(f"Ngôn ngữ không được hỗ trợ: {item}")
 
                         problem_info["display_id"] = problem_info["display_id"][:24]
                         for k, v in problem_info["template"].items():
@@ -682,7 +682,7 @@ class FPSProblemImport(CSRFExemptAPIView):
 
                 problems = FPSParser(tf.name).parse()
         else:
-            return self.error("Parse upload file error")
+            return self.error("Phân tích cú pháp tệp tải lên bị lỗi")
 
         helper = FPSHelper()
         with transaction.atomic():
@@ -697,7 +697,7 @@ class FPSProblemImport(CSRFExemptAPIView):
                 problem_data = helper.save_image(_problem, settings.UPLOAD_DIR, settings.UPLOAD_PREFIX)
                 s = FPSProblemSerializer(data=problem_data)
                 if not s.is_valid():
-                    return self.error(f"Parse FPS file error: {s.errors}")
+                    return self.error(f"Phân tích cú pháp tệp FPS bị lỗi: {s.errors}")
                 problem_data = s.data
                 problem_data["test_case_id"] = test_case_id
                 problem_data["test_case_score"] = score

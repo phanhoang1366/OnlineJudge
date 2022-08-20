@@ -63,17 +63,17 @@ class SMTPTestAPI(APIView):
     @validate_serializer(TestSMTPConfigSerializer)
     def post(self, request):
         if not SysOptions.smtp_config:
-            return self.error("Please setup SMTP config at first")
+            return self.error("Vui lòng cài đặt SMTP (mail) trước.")
         try:
             send_email(smtp_config=SysOptions.smtp_config,
                        from_name=SysOptions.website_name_shortcut,
                        to_name=request.user.username,
                        to_email=request.data["email"],
-                       subject="You have successfully configured SMTP",
-                       content="You have successfully configured SMTP")
+                       subject="Bạn đã cài đặt SMTP thành công.",
+                       content="Bạn đã cài đặt SMTP thành công.")
         except smtplib.SMTPResponseException as e:
             # guess error message encoding
-            msg = b"Failed to send email"
+            msg = b"Không thể gửi email."
             try:
                 msg = e.smtp_error
                 # qq mail
