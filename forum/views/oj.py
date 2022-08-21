@@ -25,7 +25,7 @@ class ForumPostAPI(APIView):
                                   default_capacity=2)
         can_consume, wait = user_bucket.consume()
         if not can_consume:
-            return "Please wait %d seconds" % (int(wait))
+            return "Vui lòng chờ %d giây" % (int(wait))
 
     @validate_serializer(CreateEditForumPostSerializer)
     @login_required
@@ -162,11 +162,11 @@ class ForumReplyAPI(APIView):
 
         allow_reply = SysOptions.allow_forum_reply
         if not allow_reply:
-            return self.error("Don't allow to reply")
+            return self.error("Không thể reply")
 
         data = request.data
         if not data["content"]:
-            return self.error("Reply can not be empty")
+            return self.error("Reply không được để trống")
 
         forumreplys = ForumReply.objects.select_related("author").filter(fa_id=data["fa_id"]).order_by("-create_time",)
         # 判断楼层
@@ -200,7 +200,7 @@ class ForumReplyAPI(APIView):
         send_email_async.send(from_name=SysOptions.website_name_shortcut,
                               to_email=author.email,
                               to_name=author.username,
-                              subject=f"Your Post recepted a reply",
+                              subject=f"Post của bạn đã có reply",
                               content=email_html)
         return self.success(data)
 
@@ -210,11 +210,11 @@ class ForumReplyAPI(APIView):
         """
         fa_id = request.GET.get("fa_id")
         if not fa_id:
-            return self.error("fa_id is needed")
+            return self.error("Yêu cầu fa_id")
 
         limit = request.GET.get("limit")
         if not limit:
-            return self.error("Limit is needed")
+            return self.error("Limit là cần thiết")
 
         forumreplys = ForumReply.objects.select_related("author").filter(fa_id=fa_id)
 
@@ -245,5 +245,5 @@ class ForumReplyAPI(APIView):
             elif is_super_admin:
                 ForumReply.objects.filter(id=request.GET["id"]).delete()
             else:
-                return self.error("Username doesn't match")
+                return self.error("Username không giống nhau")
         return self.success()

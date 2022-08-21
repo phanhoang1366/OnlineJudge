@@ -61,10 +61,9 @@ class WebsiteConfigAPITest(APITestCase):
                 "website_name_shortcut": "test oj", "website_footer": "<a>test</a>",
                 "allow_register": True, "submission_list_show_all": False,
                 "allow_forum_post": True, "allow_forum_reply": True,
-                "forum_sort": [{"name": "提问版", "permission": "All"},
-                               {"name": "题解版", "permission": "All"},
-                               {"name": "灌水版", "permission": "All"},
-                               {"name": "站务版", "permission": "Super Admin"}]}
+                "forum_sort": [{"name": "Question Board", "permission": "All"},
+                               {"name": "Solution", "permission": "All"},
+                               {"name": "Announcement", "permission": "Super Admin"}]}
         resp = self.client.post(url, data=data)
         self.assertSuccess(resp)
 
@@ -75,10 +74,9 @@ class WebsiteConfigAPITest(APITestCase):
                 "website_name_shortcut": "test oj", "website_footer": "<img onerror=alert(1) src=#>",
                 "allow_register": True, "submission_list_show_all": False,
                 "allow_forum_post": True, "allow_forum_reply": True,
-                "forum_sort": [{"name": "提问版", "permission": "All"},
-                               {"name": "题解版", "permission": "All"},
-                               {"name": "灌水版", "permission": "All"},
-                               {"name": "站务版", "permission": "Super Admin"}]}
+        forum_sort =  [{"name": "Question Board", "permission": "All"},
+                       {"name": "Solution", "permission": "All"},
+                       {"name": "Announcement", "permission": "Super Admin"}]
         resp = self.client.post(url, data=data)
         self.assertSuccess(resp)
         self.assertEqual(SysOptions.website_footer, "<img src=\"#\" />")
