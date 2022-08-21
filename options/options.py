@@ -120,9 +120,9 @@ class OptionDefaultValue:
     throttling = {"ip": {"capacity": 100, "fill_rate": 0.1, "default_capacity": 50},
                   "user": {"capacity": 20, "fill_rate": 0.03, "default_capacity": 10}}
     languages = languages
-    forum_sort = [{"name": "Question Board", "permission": "All"},
-                  {"name": "Solution", "permission": "All"},
-                  {"name": "Announcement", "permission": "Super Admin"}]
+    forum_sort = [{"name": "QnA", "permission": "All"},
+                  {"name": "Đ.án", "permission": "All"},
+                  {"name": "T.báo", "permission": "Super Admin"}]
     allow_forum_post = True
     allow_forum_reply = True
 
