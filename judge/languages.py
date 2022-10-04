@@ -3,24 +3,46 @@ from problem.models import ProblemIOMode
 
 default_env = ["LANG=en_US.UTF-8", "LANGUAGE=en_US:en", "LC_ALL=en_US.UTF-8"]
 
+_pas_lang_config = {
+    "template": """//PREPEND BEGIN
+        //PREPEND END
+        //TEMPLATE BEGIN
+        //TEMPLATE END
+        //APPEND BEGIN
+        //APPEND END""",
+    "compile": {
+        "src_name": "main.pas",
+        "exe_name": "main",
+        "max_cpu_time": 3000,
+        "max_real_time": 10000,
+        "max_memory": 256 * 1024 * 1024,
+        "compile_command": "/usr/bin/fpc -O2 {src_path} -o{exe_path}",
+    },
+    "run": {
+        "command": "{exe_path}",
+        "seccomp_rule": None,
+        "env": default_env
+    }
+}
+
 _c_lang_config = {
     "template": """//PREPEND BEGIN
-#include <stdio.h>
-//PREPEND END
+        #include <stdio.h>
+        //PREPEND END
 
-//TEMPLATE BEGIN
-int add(int a, int b) {
-  // Please fill this blank
-  return ___________;
-}
-//TEMPLATE END
+        //TEMPLATE BEGIN
+        int add(int a, int b) {
+        // Please fill this blank
+        return ___________;
+        }
+        //TEMPLATE END
 
-//APPEND BEGIN
-int main() {
-  printf("%d", add(1, 2));
-  return 0;
-}
-//APPEND END""",
+        //APPEND BEGIN
+        int main() {
+        printf("%d", add(1, 2));
+        return 0;
+        }
+        //APPEND END""",
     "compile": {
         "src_name": "main.c",
         "exe_name": "main",
@@ -38,22 +60,22 @@ int main() {
 
 _c_o2_lang_config = {
     "template": """//PREPEND BEGIN
-#include <stdio.h>
-//PREPEND END
+        #include <stdio.h>
+        //PREPEND END
 
-//TEMPLATE BEGIN
-int add(int a, int b) {
-  // Please fill this blank
-  return ___________;
-}
-//TEMPLATE END
+        //TEMPLATE BEGIN
+        int add(int a, int b) {
+        // Please fill this blank
+        return ___________;
+        }
+        //TEMPLATE END
 
-//APPEND BEGIN
-int main() {
-  printf("%d", add(1, 2));
-  return 0;
-}
-//APPEND END""",
+        //APPEND BEGIN
+        int main() {
+        printf("%d", add(1, 2));
+        return 0;
+        }
+        //APPEND END""",
     "compile": {
         "src_name": "main.c",
         "exe_name": "main",
@@ -86,22 +108,22 @@ _c_lang_spj_config = {
 
 _cpp_lang_config = {
     "template": """//PREPEND BEGIN
-#include <iostream>
-//PREPEND END
+        #include <iostream>
+        //PREPEND END
 
-//TEMPLATE BEGIN
-int add(int a, int b) {
-  // Please fill this blank
-  return ___________;
-}
-//TEMPLATE END
+        //TEMPLATE BEGIN
+        int add(int a, int b) {
+        // Please fill this blank
+        return ___________;
+        }
+        //TEMPLATE END
 
-//APPEND BEGIN
-int main() {
-  std::cout << add(1, 2);
-  return 0;
-}
-//APPEND END""",
+        //APPEND BEGIN
+        int main() {
+        std::cout << add(1, 2);
+        return 0;
+        }
+        //APPEND END""",
     "compile": {
         "src_name": "main.cpp",
         "exe_name": "main",
@@ -119,22 +141,22 @@ int main() {
 
 _cpp_o2_lang_config = {
     "template": """//PREPEND BEGIN
-#include <iostream>
-//PREPEND END
+        #include <iostream>
+        //PREPEND END
 
-//TEMPLATE BEGIN
-int add(int a, int b) {
-  // Please fill this blank
-  return ___________;
-}
-//TEMPLATE END
+        //TEMPLATE BEGIN
+        int add(int a, int b) {
+        // Please fill this blank
+        return ___________;
+        }
+        //TEMPLATE END
 
-//APPEND BEGIN
-int main() {
-  std::cout << add(1, 2);
-  return 0;
-}
-//APPEND END""",
+        //APPEND BEGIN
+        int main() {
+        std::cout << add(1, 2);
+        return 0;
+        }
+        //APPEND END""",
     "compile": {
         "src_name": "main.cpp",
         "exe_name": "main",
@@ -152,22 +174,22 @@ int main() {
 
 _cpp_11_lang_config = {
     "template": """//PREPEND BEGIN
-#include <iostream>
-//PREPEND END
+        #include <iostream>
+        //PREPEND END
 
-//TEMPLATE BEGIN
-int add(int a, int b) {
-  // Please fill this blank
-  return ___________;
-}
-//TEMPLATE END
+        //TEMPLATE BEGIN
+        int add(int a, int b) {
+        // Please fill this blank
+        return ___________;
+        }
+        //TEMPLATE END
 
-//APPEND BEGIN
-int main() {
-  std::cout << add(1, 2);
-  return 0;
-}
-//APPEND END""",
+        //APPEND BEGIN
+        int main() {
+        std::cout << add(1, 2);
+        return 0;
+        }
+        //APPEND END""",
     "compile": {
         "src_name": "main.cpp",
         "exe_name": "main",
@@ -185,22 +207,22 @@ int main() {
 
 _cpp_11_o2_lang_config = {
     "template": """//PREPEND BEGIN
-#include <iostream>
-//PREPEND END
+        #include <iostream>
+        //PREPEND END
 
-//TEMPLATE BEGIN
-int add(int a, int b) {
-  // Please fill this blank
-  return ___________;
-}
-//TEMPLATE END
+        //TEMPLATE BEGIN
+        int add(int a, int b) {
+        // Please fill this blank
+        return ___________;
+        }
+        //TEMPLATE END
 
-//APPEND BEGIN
-int main() {
-  std::cout << add(1, 2);
-  return 0;
-}
-//APPEND END""",
+        //APPEND BEGIN
+        int main() {
+        std::cout << add(1, 2);
+        return 0;
+        }
+        //APPEND END""",
     "compile": {
         "src_name": "main.cpp",
         "exe_name": "main",
@@ -218,22 +240,22 @@ int main() {
 
 _cpp_14_lang_config = {
     "template": """//PREPEND BEGIN
-#include <iostream>
-//PREPEND END
+        #include <iostream>
+        //PREPEND END
 
-//TEMPLATE BEGIN
-int add(int a, int b) {
-  // Please fill this blank
-  return ___________;
-}
-//TEMPLATE END
+        //TEMPLATE BEGIN
+        int add(int a, int b) {
+        // Please fill this blank
+        return ___________;
+        }
+        //TEMPLATE END
 
-//APPEND BEGIN
-int main() {
-  std::cout << add(1, 2);
-  return 0;
-}
-//APPEND END""",
+        //APPEND BEGIN
+        int main() {
+        std::cout << add(1, 2);
+        return 0;
+        }
+        //APPEND END""",
     "compile": {
         "src_name": "main.cpp",
         "exe_name": "main",
@@ -251,22 +273,22 @@ int main() {
 
 _cpp_14_o2_lang_config = {
     "template": """//PREPEND BEGIN
-#include <iostream>
-//PREPEND END
+        #include <iostream>
+        //PREPEND END
 
-//TEMPLATE BEGIN
-int add(int a, int b) {
-  // Please fill this blank
-  return ___________;
-}
-//TEMPLATE END
+        //TEMPLATE BEGIN
+        int add(int a, int b) {
+        // Please fill this blank
+        return ___________;
+        }
+        //TEMPLATE END
 
-//APPEND BEGIN
-int main() {
-  std::cout << add(1, 2);
-  return 0;
-}
-//APPEND END""",
+        //APPEND BEGIN
+        int main() {
+        std::cout << add(1, 2);
+        return 0;
+        }
+        //APPEND END""",
     "compile": {
         "src_name": "main.cpp",
         "exe_name": "main",
@@ -284,22 +306,22 @@ int main() {
 
 _cpp_17_lang_config = {
     "template": """//PREPEND BEGIN
-#include <iostream>
-//PREPEND END
+        #include <iostream>
+        //PREPEND END
 
-//TEMPLATE BEGIN
-int add(int a, int b) {
-  // Please fill this blank
-  return ___________;
-}
-//TEMPLATE END
+        //TEMPLATE BEGIN
+        int add(int a, int b) {
+        // Please fill this blank
+        return ___________;
+        }
+        //TEMPLATE END
 
-//APPEND BEGIN
-int main() {
-  std::cout << add(1, 2);
-  return 0;
-}
-//APPEND END""",
+        //APPEND BEGIN
+        int main() {
+        std::cout << add(1, 2);
+        return 0;
+        }
+        //APPEND END""",
     "compile": {
         "src_name": "main.cpp",
         "exe_name": "main",
@@ -317,22 +339,22 @@ int main() {
 
 _cpp_17_o2_lang_config = {
     "template": """//PREPEND BEGIN
-#include <iostream>
-//PREPEND END
+        #include <iostream>
+        //PREPEND END
 
-//TEMPLATE BEGIN
-int add(int a, int b) {
-  // Please fill this blank
-  return ___________;
-}
-//TEMPLATE END
+        //TEMPLATE BEGIN
+        int add(int a, int b) {
+        // Please fill this blank
+        return ___________;
+        }
+        //TEMPLATE END
 
-//APPEND BEGIN
-int main() {
-  std::cout << add(1, 2);
-  return 0;
-}
-//APPEND END""",
+        //APPEND BEGIN
+        int main() {
+        std::cout << add(1, 2);
+        return 0;
+        }
+        //APPEND END""",
     "compile": {
         "src_name": "main.cpp",
         "exe_name": "main",
@@ -365,13 +387,11 @@ _cpp_lang_spj_config = {
 
 _java_lang_config = {
     "template": """//PREPEND BEGIN
-//PREPEND END
-
-//TEMPLATE BEGIN
-//TEMPLATE END
-
-//APPEND BEGIN
-//APPEND END""",
+        //PREPEND END
+        //TEMPLATE BEGIN
+        //TEMPLATE END
+        //APPEND BEGIN
+        //APPEND END""",
     "compile": {
         "src_name": "Main.java",
         "exe_name": "Main",
@@ -391,13 +411,11 @@ _java_lang_config = {
 
 _csharp_lang_config = {
     "template": """//PREPEND BEGIN
-//PREPEND END
-
-//TEMPLATE BEGIN
-//TEMPLATE END
-
-//APPEND BEGIN
-//APPEND END""",
+        //PREPEND END
+        //TEMPLATE BEGIN
+        //TEMPLATE END
+        //APPEND BEGIN
+        //APPEND END""",
     "compile": {
         "src_name": "Main.cs",
         "exe_name": "Main",
@@ -416,13 +434,11 @@ _csharp_lang_config = {
 
 _py2_lang_config = {
     "template": """//PREPEND BEGIN
-//PREPEND END
-
-//TEMPLATE BEGIN
-//TEMPLATE END
-
-//APPEND BEGIN
-//APPEND END""",
+        //PREPEND END
+        //TEMPLATE BEGIN
+        //TEMPLATE END
+        //APPEND BEGIN
+        //APPEND END""",
     "compile": {
         "src_name": "solution.py",
         "exe_name": "solution.pyc",
@@ -439,13 +455,11 @@ _py2_lang_config = {
 }
 _py3_lang_config = {
     "template": """//PREPEND BEGIN
-//PREPEND END
-
-//TEMPLATE BEGIN
-//TEMPLATE END
-
-//APPEND BEGIN
-//APPEND END""",
+        //PREPEND END
+        //TEMPLATE BEGIN
+        //TEMPLATE END
+        //APPEND BEGIN
+        //APPEND END""",
     "compile": {
         "src_name": "solution.py",
         "exe_name": "__pycache__/solution.cpython-36.pyc",
@@ -463,11 +477,11 @@ _py3_lang_config = {
 
 _js_lang_config = {
     "template": """//PREPEND BEGIN
-//PREPEND END
-//TEMPLATE BEGIN
-//TEMPLATE END
-//APPEND BEGIN
-//APPEND END""",
+        //PREPEND END
+        //TEMPLATE BEGIN
+        //TEMPLATE END
+        //APPEND BEGIN
+        //APPEND END""",
     "run": {
         "exe_name": "solution.js",
         "command": "/usr/bin/node {exe_path}",
@@ -479,13 +493,11 @@ _js_lang_config = {
 
 _go_lang_config = {
     "template": """//PREPEND BEGIN
-//PREPEND END
-
-//TEMPLATE BEGIN
-//TEMPLATE END
-
-//APPEND BEGIN
-//APPEND END""",
+        //PREPEND END
+        //TEMPLATE BEGIN
+        //TEMPLATE END
+        //APPEND BEGIN
+        //APPEND END""",
     "compile": {
         "src_name": "main.go",
         "exe_name": "main",
@@ -505,6 +517,7 @@ _go_lang_config = {
 }
 
 languages = [
+    {"config": _pas_lang_config, "name": "Pascal", "description": "FPC 3.2.3", "content_type": "text/x-pascal"},
     {"config": _c_lang_config, "spj": {"compile": _c_lang_spj_compile, "config": _c_lang_spj_config},
      "name": "C", "description": "GCC 9.3.0", "content_type": "text/x-csrc"},
     {"config": _c_o2_lang_config, "name": "C With O2", "description": "GCC 9.3.0", "content_type": "text/x-csrc"},
